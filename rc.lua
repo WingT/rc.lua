@@ -1,3 +1,4 @@
+-- to use this,you need to install dmenu,xfce4-terminal,physlock,volumeicon,fcitx first
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -265,6 +266,7 @@ globalkeys = awful.util.table.join(
     --awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
     awful.key({ modkey },            "r",     function () awful.util.spawn_with_shell("dmenu_run") end),
+    awful.key({ modkey },            "l",     function () awful.util.spawn_with_shell("physlock") end),
     awful.key({ modkey }, "x",
               function ()
                   awful.prompt.run({ prompt = "Run Lua code: " },
