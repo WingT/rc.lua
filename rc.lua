@@ -1,4 +1,4 @@
--- to use this,you need to install dmenu,xfce4-terminal,physlock,volumeicon,fcitx first
+-- to use this,you need to install scrot,dmenu,xfce4-terminal,physlock,volumeicon,fcitx first
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -183,6 +183,25 @@ for s = 1, screen.count() do
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", screen = s })
 
+    -- declaration of battery widget
+    battery_widget = wibox.widget.textbox()
+
+    -- initialize battery status of adapter
+    function batteryInfo(adapter)
+       local fsta = io.open("/sys/class/power_supply/"..adapter.."/capacity")
+       local sta = fsta:read()
+       battery_widget:set_markup("Bat: %" .. sta .. "|")
+       fsta:close()
+    end
+
+    --show battery status at the begining
+    batteryInfo("BAT1")
+
+    -- timer declaration
+    battery_timer = timer({timeout = 60})
+    battery_timer:connect_signal("timeout", function() batteryInfo("BAT1") end)
+    battery_timer:start()
+    
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
     left_layout:add(mylauncher)
@@ -192,6 +211,8 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+    -- show battery_widget
+    right_layout:add(battery_widget)
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
@@ -266,7 +287,7 @@ globalkeys = awful.util.table.join(
     --awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
     awful.key({ modkey },            "r",     function () awful.util.spawn_with_shell("dmenu_run") end),
-    awful.key({ modkey },            "l",     function () awful.util.spawn_with_shell("physlock") end),
+    awful.key({ modkey , "Shift" },            "l",     function () awful.util.spawn_with_shell("physlock") end),
     awful.key({ modkey }, "x",
               function ()
                   awful.prompt.run({ prompt = "Run Lua code: " },
@@ -447,5 +468,6 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
-awful.util.spawn_with_shell("fcitx")
-awful.util.spawn_with_shell("volumeicon")
+awful.util.spawn_with_shell("run-once fcitx")
+awful.util.spawn_with_shell("run-once volumeicon")
+-- see Awesome Wiki for 'autostart'
