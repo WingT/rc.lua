@@ -39,10 +39,10 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+beautiful.init("/home/izzy/.config/awesome/awesome-themes/blue-black-red/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xfce4-terminal"
+terminal = "lxterminal"
 editor = "vim" 
 editor_cmd = terminal .. " -e " .. editor
 
@@ -74,7 +74,8 @@ local layouts =
 -- {{{ Wallpaper
 if beautiful.wallpaper then
     for s = 1, screen.count() do
-        gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+        --gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+        gears.wallpaper.maximized("/home/izzy/.config/awesome/wallpaper.jpg", s, true)
     end
 end
 -- }}}
@@ -204,7 +205,7 @@ for s = 1, screen.count() do
     
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
-    left_layout:add(mylauncher)
+    --left_layout:add(mylauncher)
     left_layout:add(mytaglist[s])
     left_layout:add(mypromptbox[s])
 
@@ -228,7 +229,7 @@ end
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
-    awful.button({ }, 3, function () mymainmenu:toggle() end),
+    --awful.button({ }, 3, function () mymainmenu:toggle() end),
     awful.button({ }, 4, awful.tag.viewnext),
     awful.button({ }, 5, awful.tag.viewprev)
 ))
@@ -268,6 +269,7 @@ globalkeys = awful.util.table.join(
         end),
 
     -- Standard program
+    awful.key({ modkey,           }, "g", function () awful.util.spawn("google-chrome-stable") end),
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
@@ -383,7 +385,8 @@ awful.rules.rules = {
                      focus = awful.client.focus.filter,
                      raise = true,
                      keys = clientkeys,
-                     buttons = clientbuttons } },
+                     buttons = clientbuttons,
+                     size_hints_honor = false} },
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
     { rule = { class = "pinentry" },
@@ -468,6 +471,4 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
-awful.util.spawn_with_shell("run-once fcitx")
-awful.util.spawn_with_shell("run-once volumeicon")
 -- see Awesome Wiki for 'autostart'
