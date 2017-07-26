@@ -42,7 +42,7 @@ end
 beautiful.init("/home/izzy/.config/awesome/awesome-themes/blue-black-red/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "lxterminal"
+terminal = "sakura"
 editor = "vim" 
 editor_cmd = terminal .. " -e " .. editor
 
@@ -237,6 +237,14 @@ root.buttons(awful.util.table.join(
 
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
+   awful.key({ modkey }, "b",
+      function ()
+         for s=1,screen.count() do
+            mywibox[s].visible=not mywibox[s].visible
+         end
+      end,
+      {description = "toggle statusbar"}
+   ),
     awful.key({},"Print",function () awful.util.spawn("scrot -e 'mv $f ~/Pictures/Screenshots'") end),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
@@ -270,6 +278,7 @@ globalkeys = awful.util.table.join(
 
     -- Standard program
     awful.key({ modkey,           }, "g", function () awful.util.spawn("google-chrome-stable") end),
+    awful.key({ modkey,           }, "e", function () awful.util.spawn("pcmanfm") end),
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
@@ -393,6 +402,8 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
+    { rule = { instance = "google-chrome" },
+      properties = { maximized = false } },
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
