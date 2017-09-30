@@ -56,12 +56,12 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
+    awful.layout.suit.fair,
     awful.layout.suit.tile,
     awful.layout.suit.floating,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
     --awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,
     --awful.layout.suit.spiral.dwindle,
@@ -307,7 +307,13 @@ globalkeys = awful.util.table.join(
                   awful.util.getdir("cache") .. "/history_eval")
               end),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end)
+    awful.key({ modkey }, "p", function() menubar.show() end),
+
+    -- Volume Keys
+    awful.key({}, "XF86AudioLowerVolume", function () awful.util.spawn("amixer -q sset Master 5%-",false) end),
+    awful.key({}, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer -q sset Master 5%+",false) end),
+    awful.key({}, "XF86AudioMute", function () awful.util.spawn("amixer -q sset Master 1+ toggle",false) end)
+
 )
 
 clientkeys = awful.util.table.join(
@@ -404,6 +410,10 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { instance = "google-chrome" },
       properties = { maximized = false } },
+    { rule = { instance = "libreoffice" },
+      properties = { maximized = false } },
+    { rule = { instance = "bochs" },
+      properties = { floating = false } },
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
