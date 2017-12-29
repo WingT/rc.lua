@@ -112,7 +112,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 -- Create a textclock widget
-mytextclock = awful.widget.textclock()
+mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -191,16 +191,18 @@ for s = 1, screen.count() do
     function batteryInfo(adapter)
        local fsta = io.open("/sys/class/power_supply/"..adapter.."/capacity")
        local sta = fsta:read()
-       battery_widget:set_markup("Bat: %" .. sta .. "|")
        fsta:close()
+       fsta = io.open("/sys/class/power_supply/"..adapter.."/status")
+       local charging=fsta:read()
+       battery_widget:set_markup(charging .. "%" .. sta .. " |")
     end
 
     --show battery status at the begining
-    batteryInfo("BAT1")
+    batteryInfo("BAT0")
 
     -- timer declaration
     battery_timer = timer({timeout = 60})
-    battery_timer:connect_signal("timeout", function() batteryInfo("BAT1") end)
+    battery_timer:connect_signal("timeout", function() batteryInfo("BAT0") end)
     battery_timer:start()
     
     -- Widgets that are aligned to the left
@@ -298,6 +300,7 @@ globalkeys = awful.util.table.join(
     --awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
     awful.key({ modkey },            "r",     function () awful.util.spawn_with_shell("dmenu_run") end),
+    awful.key({ modkey },            "o",     function () awful.util.spawn_with_shell("linedict -fn \"monospace-15\"") end),
     awful.key({ modkey , "Shift" },            "l",     function () awful.util.spawn_with_shell("physlock") end),
     awful.key({ modkey }, "x",
               function ()
@@ -312,7 +315,9 @@ globalkeys = awful.util.table.join(
     -- Volume Keys
     awful.key({}, "XF86AudioLowerVolume", function () awful.util.spawn("amixer -q sset Master 5%-",false) end),
     awful.key({}, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer -q sset Master 5%+",false) end),
-    awful.key({}, "XF86AudioMute", function () awful.util.spawn("amixer -q sset Master 1+ toggle",false) end)
+    awful.key({}, "XF86AudioMute", function () awful.util.spawn("amixer -q sset Master 1+ toggle",false) end),
+    awful.key({}, "XF86MonBrightnessDown", function () awful.util.spawn("xbacklight -dec 5",false) end),
+    awful.key({}, "XF86MonBrightnessUp", function () awful.util.spawn("xbacklight -inc 5",false) end)
 
 )
 
@@ -411,6 +416,12 @@ awful.rules.rules = {
     { rule = { instance = "google-chrome" },
       properties = { maximized = false } },
     { rule = { instance = "libreoffice" },
+      properties = { maximized = false } },
+    { rule = { instance = "wpp" },
+      properties = { maximized = false } },
+    { rule = { instance = "et" },
+      properties = { maximized = false } },
+    { rule = { instance = "wps" },
       properties = { maximized = false } },
     { rule = { instance = "bochs" },
       properties = { floating = false } },
